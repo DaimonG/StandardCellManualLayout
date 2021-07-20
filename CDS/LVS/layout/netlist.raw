@@ -1,0 +1,18 @@
+t 0 Z output
+t 2 VDD! inputOutput
+t 1 GND! inputOutput
+t 3 A input
+
+n 0 /Z
+n 1 /GND!
+n 2 /VDD!
+n 3 /A
+
+; pfet Instance /+1 = auLvs device Q0
+d pfet D G S B (p D S)
+i 0 pfet 2 3 0 2 " m 1.0 l 180e-9 w 1e-6 "
+
+; nfet Instance /+0 = auLvs device Q1
+d nfet D G S B (p D S)
+i 1 nfet 1 3 0 1 " m 1.0 l 180e-9 w 500e-9 "
+

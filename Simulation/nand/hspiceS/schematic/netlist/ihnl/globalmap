@@ -1,0 +1,10 @@
+CADENCE IHNL01060
+$model
+NAND/nand/schematic nand
+$endmodel
+$net
+GND! GND!
+VDD! VDD!
+$endnet
+$param
+$endparam

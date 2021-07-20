@@ -1,0 +1,25 @@
+( ( nil
+  version "2.1"
+  mapType "incremental"
+  blockName "inv3"
+  repList "hspiceS spice cmos_sch cmos.sch schematic"
+  stopList "hspiceS spice"
+  globalList "VDD! GND!"
+  hierDelim "^"
+  netlistDir "/ensc/cmc_homedirs/escmc29/simulation/inv3/hspiceS/schematic/netlist"
+ )
+( instViewTable
+ )
+( net
+ )
+( inst
+ )
+( model
+( "INVERTER3/inv3/schematic" "inv3" )
+ )
+( term
+ )
+( param
+ )
+( "inv3" "ihnl/cds0/map" )
+ )

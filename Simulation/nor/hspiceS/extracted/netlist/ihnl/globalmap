@@ -1,0 +1,8 @@
+CADENCE IHNL01060
+$model
+NOR/nor/extracted nor
+$endmodel
+$net
+$endnet
+$param
+$endparam

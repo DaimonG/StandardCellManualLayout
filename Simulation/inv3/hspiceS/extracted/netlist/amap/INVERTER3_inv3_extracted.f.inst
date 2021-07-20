@@ -1,0 +1,6 @@
+HEADER
+"PSFversion" "1.00"
+"+1v" "M0"
+"+1n" "cmosp18_pfet_ivpcell"
+"+0v" "M1"
+"+0n" "cmosp18_nfet_ivpcell"

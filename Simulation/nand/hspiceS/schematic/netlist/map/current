@@ -1,0 +1,25 @@
+( ( nil
+  version "2.1"
+  mapType "incremental"
+  blockName "nand"
+  repList "hspiceS spice cmos_sch cmos.sch schematic"
+  stopList "hspiceS spice"
+  globalList "GND! VDD!"
+  hierDelim "^"
+  netlistDir "/ensc/cmc_homedirs/escmc29/simulation/nand/hspiceS/schematic/netlist"
+ )
+( instViewTable
+ )
+( net
+ )
+( inst
+ )
+( model
+( "NAND/nand/schematic" "nand" )
+ )
+( term
+ )
+( param
+ )
+( "nand" "ihnl/cds0/map" )
+ )

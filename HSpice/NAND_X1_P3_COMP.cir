@@ -1,0 +1,101 @@
+NAND_X1
+
+* Technology Dependent design rules/parameters
+.include /CMC/setups/ensc450/HSPICE/cmosp18/rules.inc
+* Wm#, Awd# parameters etc. all specified in the rules.inc file above
+
+* Transistor models
+.protect
+.LIB `/CMC/setups/ensc450/HSPICE/cmosp18/log018.l' SS  $ typical process corner.
+.unprotect
+
+* WORST CASE SIMULATION
+
+* Supply Sources
+.param pwr=1.05
+.temp 125
+Vvdd  VDD!  0 dc pwr
+Vgnd  GND!  0 dc 0
+
+* Logic
+.param Wn=Wm#
+.param load=2fF
+.param ds=1
+
+* Schematic
+M3S NET11 B GND! GND!  NCH  L=180E-9 W=1E-6 AD=+4.80000000E-13
++AS=+4.80000000E-13 PD=+2.96000000E-06 PS=+2.96000000E-06 NRD=+2.70000000E-01
++NRS=+2.70000000E-01 M=1.0
+M2S Z_S A NET11 GND!  NCH  L=180E-9 W=1E-6 AD=+4.80000000E-13 AS=+4.80000000E-13
++PD=+2.96000000E-06 PS=+2.96000000E-06 NRD=+2.70000000E-01 NRS=+2.70000000E-01
++M=1.0
+M1S Z_S B VDD! VDD!  PCH  L=180E-9 W=1E-6 AD=+4.80000000E-13 AS=+4.80000000E-13
++PD=+2.96000000E-06 PS=+2.96000000E-06 NRD=+2.70000000E-01 NRS=+2.70000000E-01
++M=1.0
+M0S Z_S A VDD! VDD!  PCH  L=180E-9 W=1E-6 AD=+4.80000000E-13 AS=+4.80000000E-13
++PD=+2.96000000E-06 PS=+2.96000000E-06 NRD=+2.70000000E-01 NRS=+2.70000000E-01
++M=1.0
+
+* Extracted
+M3E VDD! B Z_E VDD!  PCH  L=180.000000682412E-9 W=999.999997475243E-9
++AD=540.000010852693E-15 AS=270.000005426346E-15 PD=2.08000005841313E-6
++PS=539.999973625527E-9 NRD=+2.70000001E-01 NRS=+2.70000014E-01 M=1.0
+M4E Z_E A VDD! VDD!  PCH  L=180.000000682412E-9 W=999.999997475243E-9
++AD=270.000005426346E-15 AS=540.000010852693E-15 PD=539.999973625527E-9
++PS=2.08000005841313E-6 NRD=+2.70000014E-01 NRS=+2.70000001E-01 M=1.0
+M5E GND! B 1 GND!  NCH  L=180.000000682412E-9 W=999.999997475243E-9
++AD=540.000010852693E-15 AS=270.000005426346E-15 PD=2.08000005841313E-6
++PS=539.999973625527E-9 NRD=+2.70000001E-01 NRS=+2.70000014E-01 M=1.0
+M6E 1 A Z_E GND!  NCH  L=180.000000682412E-9 W=999.999997475243E-9
++AD=270.000005426346E-15 AS=540.000010852693E-15 PD=539.999973625527E-9
++PS=2.08000005841313E-6 NRD=+2.70000014E-01 NRS=+2.70000001E-01 M=1.0
+
+Cload_S Z_S 0 load
+Cload_E Z_E 0 load
+
+* Input Stimuli (Step response)
+VA  A  0 PWL(0n pwr 5ns pwr 6ns pwr 11ns pwr 12ns pwr 17ns pwr 19ns pwr 23ns pwr 25ns pwr)
+VB  B  0 PWL(0n 0   5ns 0   6ns pwr 11ns pwr 12ns 0   17ns 0   19ns pwr 23ns pwr 25ns 0)
+
+* Simulation Parameters ************************
+.tran 0.01ps 30ns START=0 sweep load POI 2 2fF 10fF 
+
+.graph V(A)
+.graph V(B)
+.graph V(Z_S)
+.graph V(Z_E)
+.option post
+
+************************************************
+** Timing Measurements
+
+.meas tran tpdf_1ns      trig v(B) val='pwr*0.5' cross=1
++                        targ v(z_E) val='pwr*0.5' cross=1 
+.meas tran pdf_2ns       trig v(B) val='pwr*0.5' cross=3
++                        targ v(Z_E) val='pwr*0.5' cross=3
+
+* Rise propogation delay
+.meas tran tpdr_1ns      trig v(B) val='pwr*0.5' cross=2
++                        targ v(Z_E) val='pwr*0.5' cross=2 
+.meas tran tpdr_2ns      trig v(B) val='pwr*0.5' cross=4
++			 targ v(Z_E) val='pwr*0.5' cross=4
+
+* Rise Time
+.meas tran ttr_1ns       trig v(Z_E) val='pwr*0.2' rise=1
++                        targ v(Z_E) val='pwr*0.8' rise=1
+.meas tran ttr_2ns       trig v(Z_E) val='pwr*0.2' rise=2
++                        targ v(Z_E) val='pwr*0.8' rise=2
+
+* Fall Time
+.meas tran ttf_1ns       trig v(Z_E) val='pwr*0.8' fall=1
++                        targ v(Z_E) val='pwr*0.2' fall=1
+.meas tran ttf_2ns       trig v(Z_E) val='pwr*0.8' fall=2
++                        targ v(Z_E) val='pwr*0.2' fall=2
+
+************************************************
+* Measures Cell Leakage Power
+.meas tran leak_pow_in0  avg power FROM=8ns TO=10ns
+.meas tran leak_pow_in1  avg power FROM= 2ns TO= 4ns
+************************************************
+
+.end 

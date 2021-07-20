@@ -1,0 +1,13 @@
+-- starter file for Cadence virtuoso
+DEFINE cdsDefTechLib $CDS_HOME/tools/dfII/etc/cdsDefTechLib 
+DEFINE basic $CDS_HOME/tools/dfII/etc/cdslib/basic 
+DEFINE sample $CDS_HOME/tools/dfII/samples/cdslib/sample 
+DEFINE analogLib $CDS_HOME/tools/dfII/etc/cdslib/artist/analogLib 
+DEFINE cmosp18 $CMC_HOME/kits/cmosp18/dfII_lib/cmosp18 
+DEFINE pcell18 $CMC_HOME/kits/cmosp18/dfII_lib/CMCpcells 
+DEFINE package_h $CMC_HOME/kits/cmosp18/samples/analogFlow/dfII_lib/package_h 
+DEFINE VerilogA_Lib $CMC_HOME/kits/cmosp18/samples/analogFlow/dfII_lib/VerilogA_Lib 
+DEFINE tpz973g /Lnx_STC/kits/cmosp18/VSdir/dfII_lib/tpz973g 
+DEFINE vst_n18 /Lnx_STC/kits/cmosp18/VSdir/dfII_lib/vst_n18_sc_tsm_c4 
+DEFINE cmosp18_defin /Lnx_STC/kits/cmosp18/dfII_lib/cmosp18_defin_techlib 
+DEFINE cmosp18fix3 /CMC/setups/CDS/cmosp18fix3

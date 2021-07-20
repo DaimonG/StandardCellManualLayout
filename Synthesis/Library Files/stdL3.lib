@@ -1,0 +1,436 @@
+/************************************************************/
+/*     REFERENCE Liberty File Template                      */
+/*             fcampi@sfu.ca 2013                           */
+/************************************************************/
+/* Note: Area Unit is um */
+   
+library (LayoutCells) {
+
+  /* Documentation Attributes */
+  date                                  : "Spring 2021";
+  revision                              : "revision 1.0";
+  comment                               : "Lab 3 Part 2 Library File";
+
+  /* General Attributes */
+  technology                              (cmos);
+  delay_model                           : table_lookup;
+  in_place_swap_mode                    : match_footprint;
+  library_features                        (report_delay_calculation,report_power_calculation);
+
+  /* Units Attributes */
+  time_unit                             : "1ns";
+  leakage_power_unit                    : "1pW";
+  voltage_unit                          : "1V";
+  current_unit                          : "1mA";
+  pulling_resistance_unit               : "1kohm";
+  capacitive_load_unit                    (1,ff);
+
+  /* Operation Conditions */
+  nom_process                           : 1.00;
+  nom_temperature                       : 125.00;
+  nom_voltage                           : 1.05;
+
+  voltage_map (VDD,1.05);
+  voltage_map (VSS,0.00);
+
+  define(process_corner, operating_conditions, string);
+  define(drive_strength, cell, float);
+
+  operating_conditions (ss_1.05V_125C) {
+    process_corner      : "ss";
+    process             : 1.00;
+    voltage             : 1.05;
+    temperature         : 125.00;
+  }
+  default_operating_conditions : ss_1.05V_125C;
+
+  /* Threshold Definitions */
+  slew_lower_threshold_pct_fall         : 20.00 ;
+  slew_lower_threshold_pct_rise         : 20.00 ;
+  slew_upper_threshold_pct_fall         : 80.00 ;
+  slew_upper_threshold_pct_rise         : 80.00 ;
+
+  input_threshold_pct_fall              : 50.00 ;
+  input_threshold_pct_rise              : 50.00 ;
+  output_threshold_pct_fall             : 50.00 ;
+  output_threshold_pct_rise             : 50.00 ;
+ 
+  /* Default Values */
+  default_cell_leakage_power            : 0.00 ;
+  default_fanout_load      : 1;
+  default_output_pin_cap   : 0.1;
+  default_input_pin_cap    : 0.1;
+  default_inout_pin_cap    : 0.1;
+  default_max_transition   : 4;
+  
+
+  /* Writing LUT Templates */
+
+  /* Propagation Delay (from 50% of inpt to 50% of output) depends on Input Delay and Load Capacitance */
+  lu_table_template (Propagation_Delay) {
+        variable_1 : input_net_transition;
+        variable_2 : total_output_net_capacitance;
+        index_1 ("1 2");
+        index_2 ("2 10");
+  };
+
+  /* Output transition (20% to 80% of output signal) depends on Input Delay and Load Capacitance */
+  lu_table_template (Out_Transition) {
+        variable_1 : input_net_transition;
+        variable_2 : total_output_net_capacitance;
+        index_1 ("1 2");
+        index_2 ("2 10");
+  }
+  /* end lu_table */
+
+
+/******************************************************************************************
+   Module               : Layout INV_X1
+   Cell Description     : Combinational cell (INV_X1) with drive strength X1
+  *******************************************************************************************/
+
+  /* Inverter Cell */	
+  cell (INV_X1_LAY) {
+
+	pg_pin(VDD) {
+                voltage_name : VDD;
+                pg_type      : primary_power;
+        }
+        pg_pin(VSS) {
+                voltage_name : VSS;
+                pg_type      : primary_ground;
+        }
+
+        drive_strength          : 1;
+        area                    : 3;
+        
+	cell_leakage_power      : 186;
+	/* Note: We are not doing this for the sake of simplicity, but it is possible to specify a different leakage for each combination of the inputs 
+                 with the following syntax:   
+	         leakage_power () {
+                	when           : "!A";
+                	value          : XX;
+	         }
+	*/
+	        
+
+	/* Input pin: No timing, but need to specify input capacitance to enable Timing Analyses */
+	 pin (A) {
+                direction               : input;
+		capacitance             : 3;
+        }
+
+	/* Output pin: Need to specify functionality, propagation Delay, Out Transition*/
+	pin (Z) {
+
+                direction               : output;
+		
+                /* Max Cap is the max capacitance that pin is capable to drive, over this cap
+	           Synthesis will break the path to lower fanout. It must be not too higher than the 
+		   Lut higher capacitance value, otherwise the tool will need to perform interpolations
+		   and may give unaccurate results */		
+                max_capacitance         : 20;
+                function                : "!A";
+
+
+                timing () {
+	   	     related_pin        : "A";
+
+	             /* NOTE1: We know very well that is an incorrect approximation, but for simplifying your work you may choose to have rise 
+                     and fall times identical in your tables (Thus you can have simpler .cir files). In reality, rise and fall are different depending on
+                     pMOS vs nMOS mobility ratio and the chosen Wp and Wn. Same approximation holds for rise/fall transitions.
+
+                     NOTE2: We use the same LUT Axis values for Transition and Load Cap for all cells, but in fact such values should be different 
+                     between cells:  cells with higher fanout should have LUT targeted at higher Caps, while cells with lower fanout should have 
+                     lower caps */
+
+	        	cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.242,0.368","0.348,0.526");
+                        }
+                	cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.269,0.426","0.383,0.637");
+                        }
+                	fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.150,0.233","0.250,0.391");
+                        }
+                	rise_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.190,0.282","0.308,0.423");
+                        } 
+	      
+		} /* End Timing */		
+	} /* End Pin */
+} /* End Cell */
+
+
+/******************************************************************************************
+   Module           : Layout NAND_X1
+   Cell Description : Combinational cell (NAND_X1) with drive strength X1
+*******************************************************************************************/
+
+  cell (NAND_X1_LAY) {
+
+	pg_pin(VDD) {
+                voltage_name : VDD;
+                pg_type      : primary_power;
+        }
+        pg_pin(VSS) {
+                voltage_name : VSS;
+                pg_type      : primary_ground;
+        }
+
+	drive_strength      : 1;
+  	area                : 20.34;
+        cell_leakage_power      : 196;
+  	/* Input pins: No timing, but need to specify input capacitance to enable Timing Analyses */
+	pin (A) {
+                direction               : input;
+		capacitance             : 4;
+        }
+	pin (B) {
+                direction               : input;
+		capacitance             : 4;
+        }
+
+	pin (Z) {
+    		direction   : output;  
+		max_capacitance   : 20;
+    		function    : "!(A & B)";
+
+	/* NOTE3: A 2-inputs cell may have a different behavior depending on whether the transaction is due to pin A or pin B. 
+                  Again for simplicity, we will measure the delay only on one of the two and use the same number but we need to be aware 
+                  that this is yet another approximation  */
+    	 	timing () {
+      			related_pin    : "A";
+			cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.268,0.374","0.380,0.538");
+                        }
+                	cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.350,0.481","0.518,0.714");
+                        }
+                	fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.115,0.195","0.190,0.277");
+                        }
+                	rise_transition(Out_Transition) { 
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.185,0.281","0.279,0.414");
+                        }
+		} /* End Timing Related to Pin A */
+		timing () {
+      			related_pin    : "B";
+			cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.268,0.374","0.380,0.538");
+                        }
+                	cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.350,0.481","0.518,0.714");
+                        }
+                	fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.115,0.195","0.190,0.277");
+                        }
+                	rise_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.185,0.281","0.279,0.414");
+                        }
+		} /* End Timing Related to Pin B */
+		
+	  } /* End of Pin Z*/
+  } /*End of Cell NAND */
+
+
+
+/******************************************************************************************
+   Module           : Layout NOR_X1
+   Cell Description : Combinational cell (NOR_X1) with drive strength X1
+*******************************************************************************************/
+
+  cell (NOR_X1_LAY) {
+
+	pg_pin(VDD) {
+                voltage_name : VDD;
+                pg_type      : primary_power;
+        }
+        pg_pin(VSS) {
+                voltage_name : VSS;
+                pg_type      : primary_ground;
+        }
+
+	drive_strength      : 1;
+  	area                : 33.48;
+        cell_leakage_power      : 378;
+  	/* Input pins: No timing, but need to specify input capacitance to enable Timing Analyses */
+	pin (A) {
+                direction               : input;
+		capacitance             : 5;
+        }
+	pin (B) {
+                direction               : input;
+		capacitance             : 5;
+        }
+
+	pin (Z) {
+    		direction   : output;  
+		max_capacitance   : 20;
+    		function    : "!(A | B)";
+
+	/* NOTE3: A 2-inputs cell may have a different behavior depending on whether the transaction is due to pin A or pin B. 
+                  Again for simplicity, we will measure the delay only on one of the two and use the same number but we need to be aware 
+                  that this is yet another approximation  */
+    	 	timing () {
+      			related_pin    : "A";
+			cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.347,0.443","0.523,0.665");
+                        }
+                	cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.319,0.447","0.421,0.6");
+                        }
+                	fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.149,0.221","0.244,0.336");
+                        }
+                	rise_transition(Out_Transition) { 
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.155,0.272","0.235,0.363");
+                        }
+		} /* End Timing Related to Pin A */
+		timing () {
+      			related_pin    : "B";
+			cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.347,0.443","0.523,0.665");
+                        }
+                	cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.319,0.447","0.421,0.6");
+                        }
+                	fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.149,0.221","0.244,0.336");
+                        }
+                	rise_transition(Out_Transition) { 
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.155,0.272","0.235,0.363");
+			}
+		} /* End Timing Related to Pin B */
+		
+	  } /* End of Pin Z*/
+  } /*End of NOR Cell */
+
+/******************************************************************************************
+   Module           : Layout AND_X1
+   Cell Description : Combinational cell (AND_X1) with drive strength
+X1
+*******************************************************************************************/
+
+cell (AND_X1_LAY) {
+
+        pg_pin(VDD) {
+                voltage_name : VDD;
+                pg_type      : primary_power;
+        }
+        pg_pin(VSS) {
+                voltage_name : VSS;
+                pg_type      : primary_ground;
+        }
+
+        drive_strength      : 1;
+        area                : 34.72;
+        cell_leakage_power      : 242;
+        /* Input pins: No timing, but need to specify input capacitance
+to enable Timing Analyses */
+        pin (A) {
+                direction               : input;
+                capacitance             : 4;
+        }
+        pin (B) {
+                direction               : input;
+                capacitance             : 4;
+        }
+
+        pin (Z) {
+                direction   : output;  
+                max_capacitance   : 20;
+                function    : "(A & B)";
+        
+                timing () {
+                        related_pin    : "A";
+                        cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.387,0.490","0.525,0.632");
+                        }
+                        cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.472,0.551","0.666,0.751");
+                        }
+                        fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.0999,0.150","0.0841,0.161");
+                        }
+                        rise_transition(Out_Transition) { 
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.0881,0.215","0.0999,0.22");
+                        }
+                } /* End Timing Related to Pin A */
+
+                timing () {
+                        related_pin    : "B";
+                        cell_fall(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.387,0.490","0.525,0.632");
+                        }
+                        cell_rise(Propagation_Delay) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.472,0.551","0.666,0.751");
+                        }
+                        fall_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.0999,0.150","0.0841,0.161");
+                        }
+                        rise_transition(Out_Transition) {
+                                index_1 ("1,  2");
+                                index_2 ("2, 10");
+                                values ("0.0881,0.215","0.0999,0.22");
+                        }
+                } /* End Timing Related to Pin B */
+                
+          } /* End of Pin Z*/
+  } /*End of Cell AND */
+
+} /*End of Library*/

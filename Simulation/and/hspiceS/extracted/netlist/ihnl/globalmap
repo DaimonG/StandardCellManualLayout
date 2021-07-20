@@ -1,0 +1,8 @@
+CADENCE IHNL01060
+$model
+AND2/and/extracted and
+$endmodel
+$net
+$endnet
+$param
+$endparam

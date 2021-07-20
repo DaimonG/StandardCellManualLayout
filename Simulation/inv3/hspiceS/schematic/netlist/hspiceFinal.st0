@@ -1,0 +1,63 @@
+***** HSPICE -- D-2010.03-SP2 32-BIT (Aug 26 2010) linux ******
+ Input File: hspiceFinal
+ lic:
+ lic: FLEXlm: v10.8
+ lic: USER:   escmc29              HOSTNAME: ensc-esil-15
+ lic: HOSTID:                      PID:      657
+ lic: Using FLEXlm license file:
+ lic: 6053@142.58.21.5
+ lic: Checkout 1 hspice
+ lic: License/Maintenance for hspice will expire on 21-aug-2021/2020.03
+ lic: 2(in_use)/500(total) FLOATING license(s) on SERVER 142.58.21.5
+ lic:
+ init: begin read circuit files,  cpu clock=  1.00E-02
+       option search   = /CMC/tools/synopsys/hspice_vD-2010.03-SP2/hspice
+       option runlvl
+       option ingold   =     2.00
+       option artist   =     2.00
+       option psf      =     2.00
+       option probe    =     0.00
+       option post
+ init: end read circuit files,  cpu clock=  1.00E-02 memory=    149 kb
+ init: begin check errors,  cpu clock=  1.00E-02
+ init: end check errors,  cpu clock=  2.00E-02 memory=    309 kb
+ init: begin setup matrix, pivot=     0 cpu clock=  2.00E-02
+       establish matrix -- done,  cpu clock=  2.00E-02 memory=    311 kb
+       re-order matrix -- done,  cpu clock=  2.00E-02 memory=    312 kb
+ init: end setup matrix,  cpu clock=  2.00E-02 memory=    323 kb
+ sweep: temp temp1 begin, start=  2.50E+01 stop=  2.50E+01 #sweeps =   2
+ temperature: temperature=  2.50E+01
+ dcop: begin dcop,  cpu clock=  2.00E-02
+ dcop: end dcop,  cpu clock=  2.00E-02 memory=    323 kb  tot_iter=       4
+ output: hspiceFinal.tr0
+ sweep: tran tran0    begin, stop_t=  4.00E-08 #sweeps=**** cpu clock=  2.00E-02
+ tran: time= 5.5624E-09 tot_iter=      18 conv_iter=       9 cpu clock= 2.00E-02
+ tran: time= 9.0000E-09 tot_iter=      22 conv_iter=      11 cpu clock= 2.00E-02
+ tran: time= 1.3582E-08 tot_iter=     125 conv_iter=      48 cpu clock= 3.00E-02
+ tran: time= 1.7582E-08 tot_iter=     129 conv_iter=      50 cpu clock= 3.00E-02
+ tran: time= 2.0000E-08 tot_iter=     169 conv_iter=      64 cpu clock= 3.00E-02
+ tran: time= 2.4858E-08 tot_iter=     216 conv_iter=      83 cpu clock= 3.00E-02
+ tran: time= 2.8858E-08 tot_iter=     220 conv_iter=      85 cpu clock= 4.00E-02
+ tran: time= 3.2858E-08 tot_iter=     224 conv_iter=      87 cpu clock= 4.00E-02
+ tran: time= 3.6858E-08 tot_iter=     228 conv_iter=      89 cpu clock= 4.00E-02
+ tran: time= 4.0000E-08 tot_iter=     232 conv_iter=      91 cpu clock= 4.00E-02
+ sweep: tran tran0    end,  cpu clock=  4.00E-02 memory=    323 kb
+ temperature: temperature=  2.50E+01
+ dcop: begin dcop,  cpu clock=  4.00E-02
+ dcop: end dcop,  cpu clock=  4.00E-02 memory=    323 kb  tot_iter=       7
+ output: hspiceFinal.tr1
+ sweep: tran tran0    begin, stop_t=  4.00E-08 #sweeps=**** cpu clock=  4.00E-02
+ tran: time= 5.5624E-09 tot_iter=      18 conv_iter=       9 cpu clock= 5.00E-02
+ tran: time= 9.0000E-09 tot_iter=      22 conv_iter=      11 cpu clock= 5.00E-02
+ tran: time= 1.3582E-08 tot_iter=     125 conv_iter=      48 cpu clock= 5.00E-02
+ tran: time= 1.7582E-08 tot_iter=     129 conv_iter=      50 cpu clock= 6.00E-02
+ tran: time= 2.0000E-08 tot_iter=     169 conv_iter=      64 cpu clock= 6.00E-02
+ tran: time= 2.4858E-08 tot_iter=     216 conv_iter=      83 cpu clock= 6.00E-02
+ tran: time= 2.8858E-08 tot_iter=     220 conv_iter=      85 cpu clock= 6.00E-02
+ tran: time= 3.2858E-08 tot_iter=     224 conv_iter=      87 cpu clock= 7.00E-02
+ tran: time= 3.6858E-08 tot_iter=     228 conv_iter=      89 cpu clock= 7.00E-02
+ tran: time= 4.0000E-08 tot_iter=     232 conv_iter=      91 cpu clock= 7.00E-02
+ sweep: tran tran0    end,  cpu clock=  7.00E-02 memory=    323 kb
+ sweep: temp temp1 end
+>info:         ***** hspice job concluded
+ lic: Release hspice token(s)

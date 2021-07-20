@@ -1,0 +1,10 @@
+CADENCE IHNL01060
+$model
+INVERTER3/inv3/schematic inv3
+$endmodel
+$net
+GND! GND!
+VDD! VDD!
+$endnet
+$param
+$endparam

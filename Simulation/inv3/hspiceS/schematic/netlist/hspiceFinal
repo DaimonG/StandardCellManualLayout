@@ -1,0 +1,57 @@
+* # FILE NAME: /ENSC/CMC_HOMEDIRS/ESCMC29/SIMULATION/INV3/HSPICES/SCHEMATIC/    
+* NETLIST/INV3.C.RAW
+* NETLIST OUTPUT FOR HSPICES.
+* GENERATED ON MAR 13 13:15:13 2021
+   
+* GLOBAL NET DEFINITIONS
+.GLOBAL VDD! GND! 
+* FILE NAME: INVERTER3_INV3_SCHEMATIC.S.
+* SUBCIRCUIT FOR CELL: INV3.
+* GENERATED FOR: HSPICES.
+* GENERATED ON MAR 13 13:15:13 2021.
+   
+* Transistor models 
+.protect
+.LIB `/CMC/setups/ensc450/HSPICE/cmosp18/log018.l' TT  $ typical process corner.
+.unprotect
+
+* Supply Sources
+.param pwr=1.2 
+.temp  25
+Vvdd  vdd!  0 dc pwr
+Vgnd  gnd!  0 dc 0
+
+
+M1 Z A GND! GND!  NCH  L=180E-9 W=500E-9 AD=+2.40000000E-13 AS=+2.40000000E-13 
++PD=+1.09600000E-05 PS=+1.09600000E-05 NRD=+5.40000000E-01 NRS=+5.40000000E-01 
++M=1.0 
+M0 Z A VDD! VDD!  PCH  L=180E-9 W=1E-6 AD=+4.80000000E-13 AS=+4.80000000E-13 
++PD=+2.96000000E-06 PS=+2.96000000E-06 NRD=+2.70000000E-01 NRS=+2.70000000E-01 
++M=1.0 
+   
+   
+Cload z 0 20f
+
+* Input Stimuli 
+VA  a  0 PWL(0n 0 9n 0 10n pwr 19n pwr 20n 0)
+
+
+.tran 0.01ps 40ns START=0 
+   
+   
+   
+* INCLUDE FILES
+   
+   
+   
+   
+   
+   
+* END OF NETLIST
+.TEMP    25.0000    
+.OP
+.save
+.OPTION  INGOLD=2 ARTIST=2 PSF=2
++        PROBE=0
+.option post
+.END

@@ -1,0 +1,86 @@
+NOR_X1 Layout and Schematic Circuits
+
+* Technology Dependent design rules/parameters
+.include /CMC/setups/ensc450/HSPICE/cmosp18/rules.inc
+* Wm#, Awd# parameters etc. all specified in the rules.inc file above
+
+* Transistor models 
+.protect
+.LIB `/CMC/setups/ensc450/HSPICE/cmosp18/log018.l' SS  $ typical process corner.
+.unprotect
+* WORST CASE SIMULATION
+
+* Supply Sources
+.param pwr=1.05 
+.temp 125
+Vvdd  VDD!  0 dc pwr
+Vgnd  GND!  0 dc 0
+
+* Schematic Logic
+M1S Z_S A GND! GND!  NCH  L=180E-9 W=500E-9 AD=+2.40000000E-13 AS=+2.40000000E-13 
++PD=+1.09600000E-05 PS=+1.09600000E-05 NRD=+5.40000000E-01 NRS=+5.40000000E-01 
++M=1.0 
+M0S Z_S A VDD! VDD!  PCH  L=180E-9 W=1E-6 AD=+4.80000000E-13 AS=+4.80000000E-13 
++PD=+2.96000000E-06 PS=+2.96000000E-06 NRD=+2.70000000E-01 NRS=+2.70000000E-01 
++M=1.0 
+
+* Extracted Layout Logic
+M0E VDD! A Z_E VDD!  PCH  L=180.000000682412E-9 W=999.999997475243E-9 
++AD=479.999991576802E-15 AS=479.999991576802E-15 PD=1.95999996321916E-6 
++PS=1.95999996321916E-6 NRD=+2.70000014E-01 NRS=+2.70000001E-01 M=1.0 
+M1E GND! A Z_E GND!  NCH  L=180.000000682412E-9 W=499.999998737621E-9 
++AD=239.999995788401E-15 AS=239.999995788401E-15 PD=1.46000002132496E-6 
++PS=1.46000002132496E-6 NRD=+5.40000001E-01 NRS=+5.40000028E-01 M=1.0 
+
+Cload_S Z_S 0 load
+Cload_E Z_E 0 load
+
+* Input Stimuli (Step response)
+VB  B  0 PWL(0n 0 5ns 0 6ns 0 11ns 0 12ns 0 17ns 0 19ns 0 23ns 0)
+VA  A  0 PWL(0n pwr 3ns pwr 4ns 0 8ns 0  9ns pwr 13ns pwr 15ns 0 19ns 0 21ns pwr 23ns pwr)
+
+* Simulation Parameters ************************ 
+.tran 0.01ps 25ns START=0 sweep load POI 2 2fF 10fF 
+
+.graph V(A)
+.graph V(B)
+.graph V(Z_S)
+.graph V(Z_E)
+.option post
+************************************************
+* Various Timing Measurements 
+
+* Measure propogation delay from rising edge of input A to falling edge of output Z
+.meas tran tpdf_1ns      trig v(A) val='pwr*0.5' cross=2
++                        targ v(Z_E) val='pwr*0.5' cross=2 
+.meas tran tpdf_2ns      trig v(A) val='pwr*0.5' cross=4
++                        targ v(Z_E) val='pwr*0.5' cross=4
+
+* Rise propogation delay
+.meas tran tpdr_1ns      trig v(A) val='pwr*0.5' cross=1
++                        targ v(Z_E) val='pwr*0.5' cross=1 
+.meas tran tpdr_2ns      trig v(A) val='pwr*0.5' cross=3
++			 targ v(Z_E) val='pwr*0.5' cross=3
+
+* Rise Time
+.meas tran ttr_1ns       trig v(Z_E) val='pwr*0.2' rise=1
++                        targ v(Z_E) val='pwr*0.8' rise=1
+.meas tran ttr_2ns       trig v(Z_E) val='pwr*0.2' rise=2
++                        targ v(Z_E) val='pwr*0.8' rise=2
+
+* Fall Time
+.meas tran ttf_1ns       trig v(Z_E) val='pwr*0.8' fall=1
++                        targ v(Z_E) val='pwr*0.2' fall=1
+.meas tran ttf_2ns       trig v(Z_E) val='pwr*0.8' fall=2
++                        targ v(Z_E) val='pwr*0.2' fall=2
+
+************************************************
+************************************************
+* Measures Cell Leakage Power
+.meas tran leak_pow_in1  avg power FROM= 5ns TO= 7ns
+.meas tran leak_pow_in0  avg power FROM= 10ns TO= 12ns
+************************************************
+
+
+.end
+  

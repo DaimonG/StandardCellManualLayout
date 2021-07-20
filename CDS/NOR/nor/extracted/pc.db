@@ -1,0 +1,15 @@
+#
+cmosp18 pfet ivpcell
++3
++2
+#
+cmosp18 nfet ivpcell
++1
++0
+#ISCELL
+cmosp18fix3 metal1_T symbolic
+I7
+I6
+I3
+I4
+I5

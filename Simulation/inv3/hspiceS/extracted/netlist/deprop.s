@@ -1,0 +1,1 @@
+/ensc/CMC/tools/cadence/IC5141USR5_lnx86/tools.lnx86/dfII/etc/cdsSpice/dotS/deprop.s

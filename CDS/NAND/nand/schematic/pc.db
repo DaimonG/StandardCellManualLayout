@@ -1,0 +1,19 @@
+#
+cmosp18 nfet symbol
+M3
+M2
+#
+cmosp18 pfet symbol
+M1
+M0
+#ISCELL
+basic iopin symbolr
+PIN1
+PIN5
+#ISCELL
+basic ipin symbol
+PIN4
+PIN2
+#ISCELL
+basic opin symbol
+PIN3

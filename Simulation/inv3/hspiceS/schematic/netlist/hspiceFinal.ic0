@@ -1,0 +1,16 @@
+* "simulator" "HSPICE" 
+* "version" "D-2010.03-SP2 32-BIT"
+* "format" "HSP"
+* "rundate" "13:42:31 03/13/2021 "
+* "netlist" "hspiceFinal "
+* "runtitle" "* # file name: /ensc/cmc_homedirs/escmc29/simulation/inv3/hspices/sche"
+* time =  0.000e+00       
+* temperature =  2.500e+01       
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc= 1.000e-12       
+.nodeset
++ a = 0.000e+00       
++ vdd! = 1.200e+00       
++ z = 1.200e+00       
+***   END: Saved Operating Point ***                     
